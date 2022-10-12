@@ -16,6 +16,31 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
+-- Table structure for table `candoisseur`
+--
+
+DROP TABLE IF EXISTS `candoisseur`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `candoisseur` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `username` varchar(100) COLLATE utf8mb4_bin DEFAULT NULL,
+  `password` varchar(15) COLLATE utf8mb4_bin DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `candoisseur_UN` (`username`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `candoisseur`
+--
+
+LOCK TABLES `candoisseur` WRITE;
+/*!40000 ALTER TABLE `candoisseur` DISABLE KEYS */;
+/*!40000 ALTER TABLE `candoisseur` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `candy`
 --
 
@@ -27,8 +52,11 @@ CREATE TABLE `candy` (
   `name` varchar(15) COLLATE utf8mb4_bin DEFAULT NULL,
   `img_url` varchar(500) COLLATE utf8mb4_bin DEFAULT NULL,
   `description` varchar(250) COLLATE utf8mb4_bin DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
+  `candiosseur_id` int(10) unsigned DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `candy_FK` (`candiosseur_id`),
+  CONSTRAINT `candy_FK` FOREIGN KEY (`candiosseur_id`) REFERENCES `candoisseur` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -37,6 +65,8 @@ CREATE TABLE `candy` (
 
 LOCK TABLES `candy` WRITE;
 /*!40000 ALTER TABLE `candy` DISABLE KEYS */;
+INSERT INTO `candy` VALUES
+(1,'gummy worms','https://images.unsplash.com/photo-1600359756098-8bc52195bbf4?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=776&q=80','colourful chewy sweet candies shaped like worms',NULL);
 /*!40000 ALTER TABLE `candy` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -53,11 +83,32 @@ UNLOCK TABLES;
 /*!50003 SET character_set_results = utf8mb4 */ ;
 /*!50003 SET collation_connection  = utf8mb4_general_ci */ ;
 DELIMITER ;;
-CREATE DEFINER=`root`@`localhost` PROCEDURE `add_candy`(name_input varchar(20), img_url varchar(500), description_input varchar(250))
+CREATE DEFINER=`root`@`localhost` PROCEDURE `add_candy`(name_input varchar(20), img_url_input varchar(500), description_input varchar(250))
     MODIFIES SQL DATA
 BEGIN
 	INSERT INTO candy (name, img_url, description) VALUES (name_input, img_url_input, description_input);
 	SELECT LAST_INSERT_ID(); 
+	COMMIT;
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'IGNORE_SPACE,STRICT_TRANS_TABLES,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `delete_candy` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_general_ci */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `delete_candy`(id_input int unsigned)
+    MODIFIES SQL DATA
+BEGIN
+	DELETE FROM candy WHERE id = id_input;
 	COMMIT;
 END ;;
 DELIMITER ;
@@ -94,4 +145,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2022-10-11 21:02:10
+-- Dump completed on 2022-10-12  0:57:57
